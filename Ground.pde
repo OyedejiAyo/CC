@@ -1,18 +1,25 @@
 class Ground extends Sprite
 {
-  Ground(float xreg, float yreg, float bx, float by)
-  {
-    super(xreg,yreg,bx,by);
-    this.location.y = (height/2)-240;
-    this.velocity.x = -6;
-    this.currentAni = 0;
-  }
-  
-  void check()
-  {
-    if(this.location.x < -boxx-(width/2))
-    {
-      this.location.x = (boxx*2)-(width/2);
-    }
-  }
+   float slowdown = 1.0;
+   Ground()
+   {
+     super();
+     this.boxx = 1000;
+     this.boxy = 300;
+     this.reg.x = 0;
+     this.reg.y = 0;
+     this.velocity.x = _speed*this.slowdown;
+     this.location.y = (height/2.0)-this.boxy;
+   }
+   
+   void check()
+   {
+     this.velocity.x = _speed*this.slowdown;
+     if(this.location.x <= -this.boxx-(width/2.0))
+     {
+       this.location.x = -(width/2.0)+(this.boxx * (nGround-1));
+       this.currentAni = floor(random(0,this.nAni));
+     }
+   }
+ 
 }

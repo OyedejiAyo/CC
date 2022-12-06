@@ -1,71 +1,76 @@
 class Sprite
 {
-  Animation[] ani;     //array of animation classes
-  int nAni = 0;        //number of animations in the sprite
-  int currentAni = 0;  //current animation
-  PVector location = new PVector(0,0);  //current sprite location
-  PVector velocity = new PVector(0,0);  //current sprite speed
-  PVector acceleration = new PVector(0,0); //current sprite acceleration
-  PVector reg = new PVector(0,0);       //registration point (position inside the bounding box)
-  float boxx = 10;                      // bounding box width
-  float boxy = 30;                      //bounding box height
+  PVector location = new PVector(0,0);
+  PVector velocity = new PVector(0,0);
+  PVector acceleration = new PVector(0,0);
+  float boxx = 100;
+  float boxy =  150;
+  PVector reg = new PVector(boxx/2,boxy/2);
+  Animation[] ani = new Animation[10];
+  int nAni = 0;
+  int currentAni = -1;
   
-  Sprite(float xreg, float yreg, float bx, float by)
+  Sprite()
   {
-    this.ani = new Animation[10];
-    this.reg.x=xreg;
-    this.reg.y=yreg;
-    this.boxx = bx;
-    this.boxy = by;
+    
   }
   
-  void addAnimation(Animation a)
+  void addAnimation(String[] filenames, int speed)
   {
-    if(this.nAni < 10)
+    if(nAni < 10)
     {
-      this.ani[this.nAni]=a;
-      this.ani[this.nAni].w = this.boxx;
-      this.ani[this.nAni].h = this.boxy;
+      this.ani[nAni] = new Animation(filenames);
+      this.ani[nAni].speed = speed;
+      this.ani[nAni].w = boxx;
+      this.ani[nAni].h = boxy;
       this.nAni = this.nAni + 1;
+      this.currentAni = this.nAni-1;
     }  
   }
   
   void update()
   {
-    this.velocity.add(this.acceleration); 
-    this.location.add(this.velocity);
+    this.velocity=this.velocity.add(this.acceleration);
+    this.location = this.location.add(this.velocity);
+  }
+  
+  void check()
+  {
+    float actualX = screenX(this.location.x,this.location.y);
+    if(actualX > width+boxx) 
+    {
+      this.velocity.mult(-1);
+      if(this.currentAni > -1) this.currentAni = 1;
+    }  
+    if(actualX < -boxx) 
+    {
+      this.velocity.mult(-1);
+      if(this.currentAni > -1) this.currentAni = 0;
+    }  
   }
   
   void display()
   {
     pushMatrix();
+     translate(this.location.x,this.location.y);
+     translate(-reg.x,-reg.y);
+     if(this.currentAni > -1) ani[currentAni].display();    
+    popMatrix();
+    /*pushMatrix();
       translate(this.location.x,this.location.y);
       noStroke();
-      fill(0,200,255);
+      fill(0,100,255);
       circle(0,0,10);
-      translate(-this.reg.x,-this.reg.y);
-      fill(color(0,100,250,20));
+      fill(color(255,0,0,50));
+      circle(0,0,min(boxx,boxy));
+      translate(-reg.x,-reg.y);
+      fill(0,100,255,20);
       rect(0,0,boxx,boxy);
-      if(this.nAni > 0) this.ani[this.currentAni].display();
-    popMatrix();
-    
+    popMatrix();*/
   }
   
-  void check()
+  /*void jump()
   {
-    if(this.location.x > (width/2)+this.reg.x) //left screen on right
-    {
-      this.velocity = this.velocity.mult(-1);
-      this.currentAni = 1;
-    }
-    if(this.location.x < -((width/2)+this.reg.x))  //left screen on left
-    {
-      this.velocity = this.velocity.mult(-1);
-      this.currentAni = 0;
-    }
-    
-  }
-  
-  void jump(){}
-  
+  }*/
+
 }

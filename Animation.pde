@@ -1,35 +1,34 @@
 class Animation
 {
-  PShape[] frames;
   int nFrames = 0;
+  PShape[] frames;
   int counter = 0;
-  int speedcount = 0;
-  int speed = 10;
-  float w = 10;
-  float h = 10;
+  int speed = 5;
+  int frameCounter = 0;
+  float w = 100;
+  float h = 100;
   
-  Animation(String[] files)
+  Animation(String[] filenames)
   {
-    this.nFrames = files.length;
-    this.frames = new PShape[nFrames];
+    this.nFrames = filenames.length;
+    this.frames = new PShape[this.nFrames];
     for(int i = 0; i < this.nFrames; i = i + 1)
     {
-      this.frames[i]=loadShape(files[i]);
+      frames[i]=loadShape(filenames[i]);
     }
-    this.w = this.frames[0].width;
-    this.h = this.frames[0].height;
   }
   
   void display()
   {
-    
-    if(this.counter > this.nFrames-1) this.counter = 0;
-    shape(frames[counter],0,0,w,h);
-    this.speedcount = this.speedcount+1;
-    if(this.speedcount > this.speed)
+    this.counter = this.counter + 1;
+    if(this.counter > this.speed)
     {
-      this.counter = this.counter + 1;
-      this.speedcount=0;
-    }  
+      this.counter = 0;
+      this.frameCounter = this.frameCounter + 1;
+      if(this.frameCounter >= this.nFrames) this.frameCounter=0;
+    }
+    shape(this.frames[frameCounter],0,0,this.w,this.h);
+    
   }
+ 
 }
